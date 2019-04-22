@@ -10,9 +10,11 @@
 
 use std::io;
 
-mod lexer;
-mod interpreter;
+mod ast;
 mod types;
+mod lexer;
+mod parser;
+mod interpreter;
 mod utils;
 
 fn main() {
@@ -21,7 +23,8 @@ fn main() {
         Ok(_) => {
             let expr = buffer.trim_end();
             let tokens = lexer::lex(expr);
-            let result = interpreter::interpret(tokens);
+            let ast = parser::parse(tokens);
+            let result = interpreter::interpret(&ast);
             println!("= {}", result);
         },
         Err(e) => panic!(e)
