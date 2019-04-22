@@ -1,0 +1,8 @@
+[package]
+name = "ast-interpreter"
+version = "0.2.0"
+authors = ["Nicholas Jedamzik <nweggen@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+strcursor = "0.2.5"
