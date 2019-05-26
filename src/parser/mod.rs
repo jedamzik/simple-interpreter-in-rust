@@ -67,7 +67,7 @@ impl Parser {
                     self.eat(token);
                     node = Node::BinaryOperator(Box::new(BinaryOperator {
                         left: node,
-                        token: token,
+                        token,
                         right: self.term()
                     }))
                 },
@@ -75,7 +75,7 @@ impl Parser {
                     self.eat(token);
                     node = Node::BinaryOperator(Box::new(BinaryOperator {
                         left: node,
-                        token: token,
+                        token,
                         right: self.term()
                     }))
                 },
@@ -99,7 +99,7 @@ impl Parser {
                         self.eat(token);
                         node = Node::BinaryOperator(Box::new(BinaryOperator {
                             left: node,
-                            token: token,
+                            token,
                             right: self.term()
                         }))
                     },
@@ -107,7 +107,7 @@ impl Parser {
                         self.eat(token);
                         node = Node::BinaryOperator(Box::new(BinaryOperator {
                             left: node,
-                            token: token,
+                            token,
                             right: self.term()
                         }))
                     },
