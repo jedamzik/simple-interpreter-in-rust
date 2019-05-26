@@ -1,6 +1,6 @@
 [package]
 name = "ast-interpreter"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Nicholas Jedamzik <nweggen@gmail.com>"]
 edition = "2018"
 
