@@ -139,8 +139,8 @@ fn parse_digits_handles_three_digit_integers() {
     assert_eq!(integer_string, "123");
 }
 
-fn tokenize(text: &str, tokens: &Vec<Token>) -> Vec<Token> {
-    let mut tokens = tokens.clone();
+fn tokenize(text: &str, tokens: &[Token]) -> Vec<Token> {
+    let mut tokens = tokens.to_owned();
 
     let mut cur = StrCursor::new_at_start(text); 
 
