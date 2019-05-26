@@ -33,8 +33,6 @@ impl Interpreter {
 pub fn interpret(ast: &AST) -> i32 {
     let interpreter = Interpreter {};
 
-    print!("{}", &ast);
-
     interpreter.visit(&ast.root)
 }
 
