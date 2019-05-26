@@ -19,14 +19,12 @@ mod utils;
 
 fn main() {
     let buffer = &mut String::new();
-    match io::stdin().read_line(buffer) {
-        Ok(_) => {
-            let expr = buffer.trim_end();
-            let tokens = lexer::lex(expr);
-            let ast = parser::parse(tokens);
-            let result = interpreter::interpret(&ast);
-            println!("= {}", result);
-        },
-        Err(e) => panic!(e)
+
+    if io::stdin().read_line(buffer).is_ok() {
+        let expr = buffer.trim_end();
+        let tokens = lexer::lex(expr);
+        let ast = parser::parse(tokens);
+        let result = interpreter::interpret(&ast);
+        println!("= {}", result);
     }
 }
