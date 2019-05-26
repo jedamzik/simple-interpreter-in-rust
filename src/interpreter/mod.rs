@@ -33,19 +33,25 @@ impl Interpreter {
 pub fn interpret(ast: &AST) -> i32 {
     let interpreter = Interpreter {};
 
+    print!("{}", &ast);
+
     interpreter.visit(&ast.root)
 }
 
 #[cfg(test)]
-use crate::lexer::*;
-// TODO: replace parse(tokens) w/ manually written token list to avoid interdependency in tests
-use crate::parser::*;
-
 #[test]
 fn multiplication_gets_precedence_before_addition() {
-    let expr = "3 + 2 * 5";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Add), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(2))), 
+                token: Token::Operator(Operator::Mul), 
+                right: Node::Token(Token::Number(Number::Integer(5))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
 
     assert_eq!(result, 13);
@@ -53,45 +59,85 @@ fn multiplication_gets_precedence_before_addition() {
 
 #[test]
 fn multiplication_gets_precedence_before_subtraction() {
-    let expr = "3 - 2 * 5";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Sub), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(2))), 
+                token: Token::Operator(Operator::Mul), 
+                right: Node::Token(Token::Number(Number::Integer(5))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
     assert_eq!(result, -7);
 }
 
 #[test]
 fn division_gets_precedence_before_addition() {
-    let expr = "3 + 10 / 5";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Add), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(10))), 
+                token: Token::Operator(Operator::Div), 
+                right: Node::Token(Token::Number(Number::Integer(5))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
     assert_eq!(result, 5);
 }
 
 #[test]
 fn division_gets_precedence_before_subtraction() {
-    let expr = "3 - 6 / 2";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Sub), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(6))), 
+                token: Token::Operator(Operator::Div), 
+                right: Node::Token(Token::Number(Number::Integer(2))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
     assert_eq!(result, 0);
 }
 
 #[test]
 fn parenthesized_expressions_get_precedence_on_left_hand_of_operator() {
-    let expr = "(200 + 50) * 3";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Mul), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(200))), 
+                token: Token::Operator(Operator::Add), 
+                right: Node::Token(Token::Number(Number::Integer(50))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
     assert_eq!(result, 750);
 }
 
 #[test]
 fn parenthesized_expressions_get_precedence_on_right_hand_of_operator() {
-    let expr = "3 * (100 + 50)";
-    let tokens = lex(expr);
-    let ast = parse(tokens);
+    let ast = AST { 
+        root: Node::BinaryOperator(Box::new(BinaryOperator {
+            left: Node::Token(Token::Number(Number::Integer(3))), 
+            token: Token::Operator(Operator::Mul), 
+            right: Node::BinaryOperator(Box::new(BinaryOperator { 
+                left: Node::Token(Token::Number(Number::Integer(100))), 
+                token: Token::Operator(Operator::Add), 
+                right: Node::Token(Token::Number(Number::Integer(50))) 
+            }))
+        }))
+    };
     let result = interpret(&ast);
     assert_eq!(result, 450);
                                                                                                                                                                                                                                                                                                 }
