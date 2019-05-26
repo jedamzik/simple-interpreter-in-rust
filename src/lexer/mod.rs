@@ -7,17 +7,17 @@ fn tokenize_word(word: &str) -> Token {
     let integer: Result<i32, std::num::ParseIntError> = word.parse::<i32>();
 
     match integer {
-        Ok(value) => return Token::Number(Number::Integer(value)),
+        Ok(value) => Token::Number(Number::Integer(value)),
         Err(_e) => {
             match word {
-                "+" => return Token::Operator(Operator::Add),
-                "-" => return Token::Operator(Operator::Sub),
-                "*" => return Token::Operator(Operator::Mul),
-                "/" => return Token::Operator(Operator::Div),
-                "(" => return Token::LPAREN,
-                ")" => return Token::RPAREN,
-                " " => return Token::Whitespace,
-                _ => return Token::Unknown
+                "+" => Token::Operator(Operator::Add),
+                "-" => Token::Operator(Operator::Sub),
+                "*" => Token::Operator(Operator::Mul),
+                "/" => Token::Operator(Operator::Div),
+                "(" => Token::LPAREN,
+                ")" => Token::RPAREN,
+                " " => Token::Whitespace,
+                _ => Token::Unknown
             }
         }
     }
