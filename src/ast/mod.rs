@@ -1,6 +1,10 @@
 use std::fmt;
 use crate::types::*;
 
+// TODO:
+// give Nodes a children attribute, extend BinaryOperator from that
+// see Rust implementation by Ruslan Spivak: https://github.com/rspivak/lsbasi/blob/master/part7/rust/spi/src/main.rs
+
 #[derive(Debug, Eq, PartialEq)]
 pub struct AST {
     pub root: Node
