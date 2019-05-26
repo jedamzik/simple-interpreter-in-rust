@@ -37,63 +37,61 @@ pub fn interpret(ast: &AST) -> i32 {
 }
 
 #[cfg(test)]
-mod interpreter {
-    use crate::lexer::*;
-    use crate::parser::*;
-    use crate::interpreter::*;
+use crate::lexer::*;
+// TODO: replace parse(tokens) w/ manually written token list to avoid interdependency in tests
+use crate::parser::*;
 
-    #[test]
-    fn multiplication_gets_precedence_before_addition() {
-        let expr = "3 + 2 * 5";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
+#[test]
+fn multiplication_gets_precedence_before_addition() {
+    let expr = "3 + 2 * 5";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
 
-        assert_eq!(result, 13);
-    }
-
-    #[test]
-    fn multiplication_gets_precedence_before_subtraction() {
-        let expr = "3 - 2 * 5";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
-        assert_eq!(result, -7);
-    }
-
-    #[test]
-    fn division_gets_precedence_before_addition() {
-        let expr = "3 + 10 / 5";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
-        assert_eq!(result, 5);
-    }
-
-    #[test]
-    fn division_gets_precedence_before_subtraction() {
-        let expr = "3 - 6 / 2";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
-        assert_eq!(result, 0);
-    }
-
-    #[test]
-    fn parenthesized_expressions_get_precedence_on_left_hand_of_operator() {
-        let expr = "(200 + 50) * 3";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
-        assert_eq!(result, 750);
-    }
-
-    #[test]
-    fn parenthesized_expressions_get_precedence_on_right_hand_of_operator() {
-        let expr = "3 * (100 + 50)";
-        let tokens = lex(expr);
-        let ast = parse(tokens);
-        let result = interpret(&ast);
-        assert_eq!(result, 450);
-    }
+    assert_eq!(result, 13);
 }
+
+#[test]
+fn multiplication_gets_precedence_before_subtraction() {
+    let expr = "3 - 2 * 5";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
+    assert_eq!(result, -7);
+}
+
+#[test]
+fn division_gets_precedence_before_addition() {
+    let expr = "3 + 10 / 5";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
+    assert_eq!(result, 5);
+}
+
+#[test]
+fn division_gets_precedence_before_subtraction() {
+    let expr = "3 - 6 / 2";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
+    assert_eq!(result, 0);
+}
+
+#[test]
+fn parenthesized_expressions_get_precedence_on_left_hand_of_operator() {
+    let expr = "(200 + 50) * 3";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
+    assert_eq!(result, 750);
+}
+
+#[test]
+fn parenthesized_expressions_get_precedence_on_right_hand_of_operator() {
+    let expr = "3 * (100 + 50)";
+    let tokens = lex(expr);
+    let ast = parse(tokens);
+    let result = interpret(&ast);
+    assert_eq!(result, 450);
+                                                                                                                                                                                                                                                                                                }

@@ -132,133 +132,130 @@ pub fn parse(tokens: Vec<Token>) -> AST {
 }
 
 #[cfg(test)]
-mod parser {
-    // TODO:
-    // - don't use lex but pass vector of tokens directly
-    // - put these in their own test_file
-    use crate::lexer::lex;
-    use crate::parser::*;
+// TODO:
+// - don't use lex but pass vector of tokens directly
+// - put these in their own test_file
+use crate::lexer::lex;
 
-    #[test]
-    fn next_token_increments_current_token_index() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
-        assert_eq!(parser.current_token_index, 0);
+#[test]
+fn next_token_increments_current_token_index() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
+    assert_eq!(parser.current_token_index, 0);
 
+    parser.next_token();
+    assert_eq!(parser.current_token_index, 1);
+}
+
+#[test]
+fn next_token_increment_is_clamped_to_length_of_token_vector() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
+    assert_eq!(parser.current_token_index, 0);
+
+    for _ in 0..12 {
         parser.next_token();
-        assert_eq!(parser.current_token_index, 1);
     }
 
-    #[test]
-    fn next_token_increment_is_clamped_to_length_of_token_vector() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
-        assert_eq!(parser.current_token_index, 0);
+    assert_eq!(parser.current_token_index, 8);
+}
 
-        for _ in 0..12 {
-            parser.next_token();
-        }
+#[test]
+#[should_panic]
+fn eat_returns_error_if_the_passed_token_is_not_the_current_token() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
 
-        assert_eq!(parser.current_token_index, 8);
-    }
+    parser.eat(Token::Whitespace);
+}
 
-    #[test]
-    #[should_panic]
-    fn eat_returns_error_if_the_passed_token_is_not_the_current_token() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
+#[test]
+fn eat_returns_current_token_if_passed_token_matches() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
 
-        parser.eat(Token::Whitespace);
-    }
+    assert_eq!(parser.eat(Token::Number(Number::Integer(3))), Token::Number(Number::Integer(3)));
+}
 
-    #[test]
-    fn eat_returns_current_token_if_passed_token_matches() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
+#[test]
+fn eat_advances_current_token_index() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
+    assert_eq!(parser.current_token_index, 0);
 
-        assert_eq!(parser.eat(Token::Number(Number::Integer(3))), Token::Number(Number::Integer(3)));
-    }
+    parser.eat(Token::Number(Number::Integer(3)));
+    assert_eq!(parser.current_token_index, 1);
+}
 
-    #[test]
-    fn eat_advances_current_token_index() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
-        assert_eq!(parser.current_token_index, 0);
+#[test]
+fn factor_skips_whitespace_tokens() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 3,
+        tokens
+    };
+    assert_eq!(parser.current_token_index, 3);
 
-        parser.eat(Token::Number(Number::Integer(3)));
-        assert_eq!(parser.current_token_index, 1);
-    }
+    parser.factor();
 
-    #[test]
-    fn factor_skips_whitespace_tokens() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 3,
-            tokens
-        };
-        assert_eq!(parser.current_token_index, 3);
+    assert_eq!(parser.current_token_index, 5);
+}
 
-        parser.factor();
+#[test]
+fn factor_returns_number_token_as_node() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
+    let node = parser.factor();
+    assert_eq!(node, Node::Token(Token::Number(Number::Integer(3))));
+}
 
-        assert_eq!(parser.current_token_index, 5);
-    }
+#[test]
+#[should_panic]
+fn factor_throws_syntax_error_on_operator() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 2,
+        tokens
+    };
+    parser.factor();
+}
 
-    #[test]
-    fn factor_returns_number_token_as_node() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
-        let node = parser.factor();
-        assert_eq!(node, Node::Token(Token::Number(Number::Integer(3))));
-    }
+#[test]
+fn factor_consumes_the_token() {
+    let expr = "3 * 2 / 1";
+    let tokens = lex(expr);
+    let parser = &mut Parser {
+        current_token_index: 0,
+        tokens
+    };
+    assert_eq!(parser.current_token_index, 0);
 
-    #[test]
-    #[should_panic]
-    fn factor_throws_syntax_error_on_operator() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 2,
-            tokens
-        };
-        parser.factor();
-    }
-
-    #[test]
-    fn factor_consumes_the_token() {
-        let expr = "3 * 2 / 1";
-        let tokens = lex(expr);
-        let parser = &mut Parser {
-            current_token_index: 0,
-            tokens
-        };
-        assert_eq!(parser.current_token_index, 0);
-
-        parser.factor();
-        assert_eq!(parser.current_token_index, 1);
-    }
+    parser.factor();
+    assert_eq!(parser.current_token_index, 1);
 }
