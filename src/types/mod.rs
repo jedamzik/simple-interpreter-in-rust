@@ -41,17 +41,17 @@ impl fmt::Display for Operator {
 
 pub fn is_addsub_operator(token: Token) -> bool {
     match token {
-        Token::Operator(Operator::Add) => return true,
-        Token::Operator(Operator::Sub) => return true,
-        _ => return false
+        Token::Operator(Operator::Add) => true,
+        Token::Operator(Operator::Sub) => true,
+        _ => false
     }
 }
 
 pub fn is_muldiv_operator(token: Token) -> bool {
     match token {
-        Token::Operator(Operator::Mul) => return true,
-        Token::Operator(Operator::Div) => return true,
-        _ => return false
+        Token::Operator(Operator::Mul) => true,
+        Token::Operator(Operator::Div) => true,
+        _ => false
     }
 }
 
