@@ -10,6 +10,14 @@ pub struct AST {
     pub root: Node
 }
 
+impl fmt::Display for AST {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            _ => f.write_str(&format!("{:?}", self))
+        }
+    }
+}
+
 #[derive(Debug, Eq, PartialEq)]
 pub struct BinaryOperator {
     pub left: Node,
