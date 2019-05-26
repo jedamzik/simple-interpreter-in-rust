@@ -179,7 +179,7 @@ fn tokenize_returns_a_vector_of_tokens() {
 }
 
 pub fn lex(text: &str) -> Vec<Token> {
-    return tokenize(text, &Vec::new());
+    tokenize(text, &Vec::new())
 }
 
 #[test]
