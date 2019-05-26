@@ -82,10 +82,7 @@ fn tokenize_word_returns_right_paren() {
 fn is_integer(c: &str) -> bool {
     let integer: Result<i32, std::num::ParseIntError> = c.parse::<i32>();
 
-    match integer {
-        Ok(_) => return true,
-        Err(_) => return false
-    }
+    integer.is_ok()
 }
 
 #[test]
