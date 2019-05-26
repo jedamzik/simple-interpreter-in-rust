@@ -133,14 +133,25 @@ pub fn parse(tokens: Vec<Token>) -> AST {
 
 #[cfg(test)]
 // TODO:
-// - don't use lex but pass vector of tokens directly
 // - put these in their own test_file
-use crate::lexer::lex;
+
+fn setup_tokens() -> Vec<Token> {
+    vec![
+        Token::Number(Number::Integer(3)),
+        Token::Whitespace,
+        Token::Operator(Operator::Mul),
+        Token::Whitespace,
+        Token::Number(Number::Integer(2)),
+        Token::Whitespace,
+        Token::Operator(Operator::Div),
+        Token::Whitespace,
+        Token::Number(Number::Integer(1))
+    ]
+}
 
 #[test]
 fn next_token_increments_current_token_index() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -153,8 +164,7 @@ fn next_token_increments_current_token_index() {
 
 #[test]
 fn next_token_increment_is_clamped_to_length_of_token_vector() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -171,8 +181,7 @@ fn next_token_increment_is_clamped_to_length_of_token_vector() {
 #[test]
 #[should_panic]
 fn eat_returns_error_if_the_passed_token_is_not_the_current_token() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -183,8 +192,7 @@ fn eat_returns_error_if_the_passed_token_is_not_the_current_token() {
 
 #[test]
 fn eat_returns_current_token_if_passed_token_matches() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -195,8 +203,7 @@ fn eat_returns_current_token_if_passed_token_matches() {
 
 #[test]
 fn eat_advances_current_token_index() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -209,8 +216,7 @@ fn eat_advances_current_token_index() {
 
 #[test]
 fn factor_skips_whitespace_tokens() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 3,
         tokens
@@ -224,8 +230,7 @@ fn factor_skips_whitespace_tokens() {
 
 #[test]
 fn factor_returns_number_token_as_node() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
@@ -237,8 +242,7 @@ fn factor_returns_number_token_as_node() {
 #[test]
 #[should_panic]
 fn factor_throws_syntax_error_on_operator() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 2,
         tokens
@@ -248,8 +252,7 @@ fn factor_throws_syntax_error_on_operator() {
 
 #[test]
 fn factor_consumes_the_token() {
-    let expr = "3 * 2 / 1";
-    let tokens = lex(expr);
+    let tokens = setup_tokens();
     let parser = &mut Parser {
         current_token_index: 0,
         tokens
